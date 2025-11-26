@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jowon's DevLog: 기록과 성장</title>
+    <!-- 폰트 및 아이콘 -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <style>
+        /* ------------------------------------------------ */
+        /* 0. Global Variables & Reset */
+        /* ------------------------------------------------ */
+        :root {
+            --color-primary: #3b82f6;
+            --color-primary-dark: #2563eb;
+            --color-text: #1f2937;
+            --color-text-light: #6b7280;
+            --color-bg: #ffffff;
+            --color-surface: #f3f4f6;
+            --color-border: #e5e7eb;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --radius-md: 0.5rem;
+            --radius-lg: 0.75rem;
+        }
+
+        body.dark-mode {
+            --color-primary: #60a5fa;
+            --color-primary-dark: #3b82f6;
+            --color-text: #f9fafb;
+            --color-text-light: #9ca3af;
+            --color-bg: #111827;
+            --color-surface: #1f2937;
+            --color-border: #374151;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--color-text);
+            background-color: var(--color-bg);
+            line-height: 1.6;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        a { text-decoration: none; color: inherit; transition: 0.2s; }
+        ul { list-style: none; }
+        button { cursor: pointer; border: none; background: none; font-family: inherit; }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        /* ------------------------------------------------ */
+        /* 1. Header & Navigation */
+        /* ------------------------------------------------ */
+        .site-header {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--color-border);
+        }
+        
+        body.dark-mode .site-header {
+            background-color: rgba(17, 24, 39, 0.8);
+        }
+
+        .header-inner {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--color-primary);
+            letter-spacing: -0.05em;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            font-weight: 500;
+            color: var(--color-text-light);
+            position: relative;
+            padding: 0.5rem 0;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--color-primary);
+        }
+
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--color-primary);
+        }
+
+        .theme-btn {
+            color: var(--color-text);
+            font-size: 1.2rem;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: background 0.2s;
+        }
+        .theme-btn:hover { background-color: var(--color-surface); }
+
+        .mobile-menu-btn { display: none; font-size: 1.5rem; color: var(--color-text); }
+
+        /* ------------------------------------------------ */
+        /* 2. Main Content (View Switching) */
+        /* ------------------------------------------------ */
+        main { padding: 3rem 0; min-height: 80vh; }
+
+        /* 화면 전환 로직: 모든 뷰는 숨기고 active만 표시 */
+        .view-section {
+            display: none;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        .view-section.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-header { margin-bottom: 2.5rem; text-align: center; }
+        .section-title { font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .section-desc { color: var(--color-text-light); }
+
+        /* ------------------------------------------------ */
+        /* 3. Components Styles */
+        /* ------------------------------------------------ */
+        
+        /* Grid Layouts */
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+        .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2.5rem; }
+
+        /* Card Style */
+        .card {
+            background-color: var(--color-surface);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 1px solid var(--color-border);
+        }
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+        .card-img-wrapper {
+            height: 200px;
+            overflow: hidden;
+            background-color: var(--color-border);
+        }
+        .card-img { width: 100%; height: 100%; object-fit: cover; }
+        .card-body { padding: 1.5rem; }
+        .card-tag {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background-color: rgba(59, 130, 246, 0.1);
+            color: var(--color-primary);
+            margin-bottom: 1rem;
+        }
+        .card-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.75rem; line-height: 1.4; }
+        .card-excerpt { color: var(--color-text-light); font-size: 0.95rem; margin-bottom: 1.5rem; }
+        .card-footer { font-size: 0.85rem; color: var(--color-text-light); display: flex; justify-content: space-between; }
+
+        /* Featured Post (Home) */
+        .featured-hero {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 0;
+            background-color: var(--color-surface);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            margin-bottom: 4rem;
+            border: 1px solid var(--color-border);
+        }
+        .hero-img { width: 100%; height: 100%; object-fit: cover; min-height: 400px; }
+        .hero-content { padding: 3rem; display: flex; flex-direction: column; justify-content: center; }
+        .hero-title { font-size: 2.5rem; font-weight: 800; line-height: 1.2; margin-bottom: 1rem; }
+
+        /* About Section Styles */
+        .profile-container {
+            display: flex;
+            gap: 3rem;
+            align-items: center;
+            background: var(--color-surface);
+            padding: 3rem;
+            border-radius: var(--radius-lg);
+        }
+        .profile-img {
+            /* 크기 조정: 가로 250px, 세로 250px로 확대 */
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            object-fit: cover;
+            /* 이미지 테두리 색상 유지 */
+            border: 4px solid var(--color-primary);
+            /* 그림자 추가하여 입체감 부여 */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        .profile-info h3 { font-size: 1.8rem; margin-bottom: 1rem; }
+        .skills-list { display: flex; gap: 0.8rem; flex-wrap: wrap; margin-top: 1.5rem; }
+        .skill-tag { 
+            padding: 0.5rem 1rem; 
+            background: var(--color-bg); 
+            border: 1px solid var(--color-border); 
+            border-radius: var(--radius-md);
+            font-weight: 600;
+        }
+
+        /* ------------------------------------------------ */
+        /* 4. Responsive Design */
+        /* ------------------------------------------------ */
+        @media (max-width: 900px) {
+            .featured-hero { grid-template-columns: 1fr; }
+            .hero-img { height: 250px; min-height: auto; }
+            .hero-content { padding: 2rem; }
+            .hero-title { font-size: 1.8rem; }
+            .grid-3 { grid-template-columns: repeat(2, 1fr); }
+            .profile-container { flex-direction: column; text-align: center; }
+            .profile-img { 
+                width: 200px; /* 모바일에서 조금 작게 */
+                height: 200px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu-btn { display: block; }
+            .nav-menu {
+                position: fixed;
+                top: 71px;
+                left: 0;
+                width: 100%;
+                background: var(--color-bg);
+                flex-direction: column;
+                padding: 2rem;
+                gap: 1.5rem;
+                border-bottom: 1px solid var(--color-border);
+                transform: translateY(-150%);
+                transition: transform 0.3s ease;
+            }
+            .nav-menu.active { transform: translateY(0); }
+            .grid-3, .grid-2 { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 헤더 -->
+    <header class="site-header">
+        <div class="container header-inner">
+            <!-- Jowon의 로고로 변경 -->
+            <a href="#" class="logo" onclick="switchView('home')">Jowon.</a>
+            
+            <nav>
+                <ul class="nav-menu" id="nav-menu">
+                    <li><a href="#" class="nav-link active" data-target="home">홈</a></li>
+                    <li><a href="#" class="nav-link" data-target="tech">기술</a></li>
+                    <li><a href="#" class="nav-link" data-target="design">디자인</a></li>
+                    <li><a href="#" class="nav-link" data-target="about">소개</a></li>
+                </ul>
+            </nav>
+
+            <div style="display: flex; gap: 15px; align-items: center;">
+                <button class="theme-btn" id="theme-toggle" aria-label="테마 변경">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <button class="mobile-menu-btn" id="mobile-menu-toggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        
+        <!-- 1. HOME VIEW -->
+        <section id="home" class="view-section active">
+            <!-- Featured Post -->
+            <article class="featured-hero">
+                <div class="hero-image-wrapper">
+                    <!-- Picsum Random Image -->
+                    <img src="https://picsum.photos/800/600?random=1" alt="Hero" class="hero-img">
+                </div>
+                <div class="hero-content">
+                    <span class="card-tag">Jowon's Pick</span>
+                    <h2 class="hero-title">웹 어셈블리(Wasm)가 바꾸는 웹의 미래</h2>
+                    <p class="card-excerpt">브라우저에서 고성능 애플리케이션을 실행하기 위한 게임 체인저, WebAssembly의 원리와 활용 사례를 깊이 있게 탐구합니다.</p>
+                    <a href="#" class="nav-link" style="color: var(--color-primary); font-weight: 700;">지금 읽기 &rarr;</a>
+                </div>
+            </article>
+
+            <div class="section-header">
+                <h2 class="section-title">Jowon의 최신 기록</h2>
+            </div>
+            
+            <div class="grid-3">
+                <!-- Post 1 -->
+                <article class="card">
+                    <div class="card-img-wrapper">
+                        <img src="https://picsum.photos/400/250?random=11" class="card-img" alt="Post">
+                    </div>
+                    <div class="card-body">
+                        <span class="card-tag">Backend</span>
+                        <h3 class="card-title">Node.js 이벤트 루프 완벽 가이드</h3>
+                        <p class="card-excerpt">싱글 스레드 환경에서 비동기 처리가 어떻게 동작하는지 내부 구조를 파헤칩니다.</p>
+                        <div class="card-footer">
+                            <span>2024.11.26</span><span>5 min read</span>
+                        </div>
+                    </div>
+                </article>
+                <!-- Post 2 -->
+                <article class="card">
+                    <div class="card-img-wrapper">
+                        <img src="https://picsum.photos/400/250?random=12" class="card-img" alt="Post">
+                    </div>
+                    <div class="card-body">
+                        <span class="card-tag">Design</span>
+                        <h3 class="card-title">마이크로 인터랙션의 힘</h3>
+                        <p class="card-excerpt">사용자 경험을 향상시키는 작은 애니메이션과 피드백의 중요성에 대하여.</p>
+                        <div class="card-footer">
+                            <span>2024.11.24</span><span>4 min read</span>
+                        </div>
+                    </div>
+                </article>
+                <!-- Post 3 -->
+                <article class="card">
+                    <div class="card-img-wrapper">
+                        <img src="https://picsum.photos/400/250?random=13" class="card-img" alt="Post">
+                    </div>
+                    <div class="card-body">
+                        <span class="card-tag">DevOps</span>
+                        <h3 class="card-title">서버리스 아키텍처 비용 최적화</h3>
+                        <p class="card-excerpt">AWS Lambda와 CloudWatch를 활용하여 클라우드 비용을 절감하는 실전 팁.</p>
+                        <div class="card-footer">
+                            <span>2024.11.20</span><span>7 min read</span>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- 2. TECH VIEW -->
+        <section id="tech" class="view-section">
+            <div class="section-header">
+                <h2 class="section-title">기술 블로그</h2>
+                <p class="section-desc">Jowon이 탐구한 Frontend, Backend, DevOps 이야기</p>
+            </div>
+            
+            <div class="grid-3">
+                <article class="card">
+                    <div class="card-img-wrapper"><img src="https://picsum.photos/400/250?random=21" class="card-img"></div>
+                    <div class="card-body">
+                        <span class="card-tag">Frontend</span>
+                        <h3 class="card-title">React 19 컴파일러 도입기</h3>
+                        <p class="card-excerpt">수동 메모이제이션의 종말? React Compiler가 가져올 변화.</p>
+                    </div>
+                </article>
+                <article class="card">
+                    <div class="card-img-wrapper"><img src="https://picsum.photos/400/250?random=22" class="card-img"></div>
+                    <div class="card-body">
+                        <span class="card-tag">API</span>
+                        <h3 class="card-title">GraphQL vs REST: 2024년의 선택</h3>
+                        <p class="card-excerpt">프로젝트 규모와 팀 구성에 따른 API 아키텍처 선택 가이드.</p>
+                    </div>
+                </article>
+                <article class="card">
+                    <div class="card-img-wrapper"><img src="https://picsum.photos/400/250?random=23" class="card-img"></div>
+                    <div class="card-body">
+                        <span class="card-tag">DevOps</span>
+                        <h3 class="card-title">Docker 멀티 스테이지 빌드 전략</h3>
+                        <p class="card-excerpt">컨테이너 이미지를 경량화하여 배포 속도를 2배 높이는 방법.</p>
+                    </div>
+                </article>
+                <article class="card">
+                    <div class="card-img-wrapper"><img src="https://picsum.photos/400/250?random=24" class="card-img"></div>
+                    <div class="card-body">
+                        <span class="card-tag">Language</span>
+                        <h3 class="card-title">JavaScript 개발자를 위한 Rust</h3>
+                        <p class="card-excerpt">소유권 모델 이해하기: 왜 Rust는 메모리 안전한가?</p>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- 3. DESIGN VIEW -->
+        <section id="design" class="view-section">
+            <div class="section-header">
+                <h2 class="section-title">디자인 & UX</h2>
+                <p class="section-desc">사용자 경험을 고민하는 Jowon의 시선</p>
+            </div>
+
+            <div class="grid-2">
+                <article class="card">
+                    <div class="card-img-wrapper" style="height: 300px;">
+                        <img src="https://picsum.photos/600/400?random=31" class="card-img">
+                    </div>
+                    <div class="card-body">
+                        <span class="card-tag">System</span>
+                        <h3 class="card-title">디자인 시스템 구축 실패기</h3>
+                        <p class="card-excerpt">토큰 네이밍부터 컴포넌트 라이브러리 배포까지, 겪었던 시행착오들.</p>
+                    </div>
+                </article>
+                <article class="card">
+                    <div class="card-img-wrapper" style="height: 300px;">
+                        <img src="https://picsum.photos/600/400?random=32" class="card-img">
+                    </div>
+                    <div class="card-body">
+                        <span class="card-tag">A11Y</span>
+                        <h3 class="card-title">웹 접근성: WCAG 2.1 가이드</h3>
+                        <p class="card-excerpt">모두를 위한 웹: 스크린 리더 사용자를 고려한 마크업 전략.</p>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <!-- 4. ABOUT VIEW -->
+        <section id="about" class="view-section">
+            <div class="section-header">
+                <h2 class="section-title">About Jowon</h2>
+            </div>
+            
+            <div class="profile-container">
+                <!-- 첨부 2 이미지 파일 경로로 업데이트 -->
+                <img src="uploaded:profile.jpg-33b31f67-b0dd-47d5-8ace-e0329eb12dde" alt="Jowon Profile Image" class="profile-img">
+                <div class="profile-info">
+                    <!-- Jowon의 소개로 변경 -->
+                    <h3>안녕하세요, <span style="color:var(--color-primary)">Jowon</span>입니다.</h3>
+                    <p style="color:var(--color-text-light); margin-bottom: 1.5rem;">
+                        사용자 중심의 문제를 기술로 해결하는 것을 좋아합니다. 
+                        깔끔한 코드와 직관적인 UX를 지향하며, 새로운 기술을 배우고 공유하는 과정에서 즐거움을 느낍니다.
+                    </p>
+                    
+                    <h4>My Tech Stack</h4>
+                    <div class="skills-list">
+                        <span class="skill-tag">JavaScript (ES6+)</span>
+                        <span class="skill-tag">React / Next.js</span>
+                        <span class="skill-tag">Node.js</span>
+                        <span class="skill-tag">TypeScript</span>
+                        <span class="skill-tag">AWS</span>
+                        <span class="skill-tag">Figma</span>
+                    </div>
+
+                    <div style="margin-top: 2rem;">
+                        <!-- GitHub URL 업데이트 -->
+                        <a href="https://github.com/sowokim777" target="_blank" style="font-weight:700; color:var(--color-primary); margin-right: 1rem;">
+                            <i class="fab fa-github"></i> Github
+                        </a>
+                        <!-- Email 주소 업데이트 -->
+                        <a href="mailto:sowokim777@gmail.com" style="font-weight:700; color:var(--color-primary);">
+                            <i class="fas fa-envelope"></i> Email Me
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer style="text-align: center; padding: 2rem 0; color: var(--color-text-light); border-top: 1px solid var(--color-border);">
+        <p>&copy; 2025 Jowon. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // DOM Elements
+        const navLinks = document.querySelectorAll('.nav-link');
+        const views = document.querySelectorAll('.view-section');
+        const themeBtn = document.getElementById('theme-toggle');
+        const mobileMenuBtn = document.getElementById('mobile-menu-toggle');
+        const navMenu = document.getElementById('nav-menu');
+        const themeIcon = themeBtn.querySelector('i');
+
+        // 1. Navigation Logic (SPA View Switch)
+        function switchView(targetId) {
+            // 모든 뷰 숨김
+            views.forEach(view => {
+                view.classList.remove('active');
+            });
+            // 타겟 뷰 표시
+            document.getElementById(targetId).classList.add('active');
+            
+            // 네비게이션 활성 상태 업데이트
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if(link.getAttribute('data-target') === targetId) {
+                    link.classList.add('active');
+                }
+            });
+
+            // 모바일 메뉴 닫기
+            navMenu.classList.remove('active');
+            
+            // 상단으로 스크롤
+            window.scrollTo(0, 0);
+        }
+
+        // 네비게이션 클릭 이벤트 리스너 등록
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const target = link.getAttribute('data-target');
+                if (target) switchView(target);
+            });
+        });
+
+        // 2. Dark Mode Logic
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.body.classList.add('dark-mode');
+            themeIcon.classList.replace('fa-moon', 'fa-sun');
+        }
+
+        themeBtn.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            
+            if (isDark) {
+                themeIcon.classList.replace('fa-moon', 'fa-sun');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                themeIcon.classList.replace('fa-sun', 'fa-moon');
+                localStorage.setItem('theme', 'light');
+            }
+        });
+
+        // 3. Mobile Menu Toggle
+        mobileMenuBtn.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+        });
+
+    </script>
+</body>
+</html>
