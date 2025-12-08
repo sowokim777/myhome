@@ -1,1 +1,864 @@
-aa
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jowon's DevLog - Admin Mode</title>
+    <!-- 폰트 및 아이콘 -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    
+    <style>
+        /* ------------------------------------------------ */
+        /* 0. Global Variables & Reset */
+        /* ------------------------------------------------ */
+        :root {
+            --color-primary: #3b82f6;
+            --color-text: #1f2937;
+            --color-text-light: #6b7280;
+            --color-bg: #ffffff;
+            --color-surface: #f3f4f6;
+            --color-border: #e5e7eb;
+            --color-top-bg: #000080; /* Reference Blue */
+            --color-nav-bg: #f9a825; /* Reference Orange */
+            --radius-md: 0.5rem;
+            --radius-lg: 0.75rem;
+        }
+
+        body.dark-mode {
+            --color-primary: #60a5fa;
+            --color-text: #f9fafb;
+            --color-text-light: #9ca3af;
+            --color-bg: #111827;
+            --color-surface: #1f2937;
+            --color-border: #374151;
+            --color-top-bg: #1e3a8a;
+            --color-nav-bg: #92400e;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--color-text);
+            background-color: var(--color-bg);
+            line-height: 1.6;
+            transition: background-color 0.3s, color 0.3s;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* ------------------------------------------------ */
+        /* 1. TOP FRAME (Header) */
+        /* ------------------------------------------------ */
+        .top-frame {
+            height: 60px;
+            background-color: var(--color-top-bg);
+            color: white;
+            display: flex;
+            align-items: center;
+            padding: 0 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .top-frame-left {
+            display: flex;
+            align-items: center;
+            width: 250px;
+            flex-shrink: 0;
+            margin-right: 15px;
+            border-right: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .top-frame .logo {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: white;
+            cursor: pointer;
+        }
+
+        .top-frame-center {
+            flex-grow: 1;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+        }
+
+        .top-frame-right {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .top-nav-link {
+            color: white;
+            opacity: 0.8;
+            transition: opacity 0.2s;
+            cursor: pointer;
+        }
+        .top-nav-link:hover { opacity: 1; }
+
+        .theme-btn {
+            color: white;
+            font-size: 1.2rem;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: background 0.2s;
+            cursor: pointer;
+        }
+        .theme-btn:hover { background-color: rgba(255, 255, 255, 0.1); }
+
+        /* ------------------------------------------------ */
+        /* 2. MAIN FRAME (Left + Right) */
+        /* ------------------------------------------------ */
+        .main-frame {
+            display: flex;
+            flex-grow: 1;
+            height: calc(100vh - 60px); /* 전체 높이에서 헤더 제외 */
+        }
+
+        /* 2.1. LEFT FRAME (Navigation) */
+        .left-frame {
+            width: 250px;
+            background-color: var(--color-nav-bg);
+            color: var(--color-text);
+            padding: 1.5rem 0;
+            flex-shrink: 0;
+            border-right: 1px solid var(--color-border);
+            overflow-y: auto;
+        }
+
+        .nav-item {
+            color: white; /* 텍스트 흰색 */
+            padding: 1rem 1.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .nav-item i.fa-angle-right { transition: transform 0.3s; }
+        .nav-item.active i.fa-angle-right { transform: rotate(90deg); }
+        .nav-title { display: flex; align-items: center; gap: 10px; }
+        .nav-icon { width: 20px; text-align: center; }
+
+        .sub-menu {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out;
+            background-color: rgba(0, 0, 0, 0.1);
+        }
+        
+        .sub-menu-item {
+            padding: 0.75rem 1.5rem 0.75rem 3rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.95rem;
+            font-weight: 500;
+            display: block;
+            cursor: pointer;
+        }
+        .sub-menu-item:hover, .sub-menu-item.active {
+            background-color: rgba(0, 0, 0, 0.2);
+            color: white;
+            font-weight: 600;
+        }
+
+        /* 2.2. RIGHT FRAME (Content) */
+        .right-frame {
+            flex-grow: 1;
+            padding: 2rem 3rem;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .content-section {
+            display: none;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        .content-section.active {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section-title { font-size: 2rem; font-weight: 700; margin-bottom: 1.5rem; border-bottom: 2px solid var(--color-border); padding-bottom: 0.5rem;}
+        .section-desc { color: var(--color-text-light); margin-bottom: 2rem; }
+
+        .post-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        .card {
+            background-color: var(--color-surface);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 1px solid var(--color-border);
+        }
+        .card-body { padding: 1.5rem; }
+        .card-tag {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background-color: rgba(59, 130, 246, 0.1);
+            color: var(--color-primary);
+            margin-bottom: 1rem;
+        }
+        .card-title { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.75rem; line-height: 1.4; }
+        .card-excerpt { color: var(--color-text-light); font-size: 0.95rem; margin-bottom: 1rem; }
+        .card-footer { font-size: 0.85rem; color: var(--color-text-light); }
+        
+        /* About Styles */
+        .profile-container {
+            display: flex;
+            gap: 3rem;
+            align-items: center;
+            background: var(--color-surface);
+            padding: 3rem;
+            border-radius: var(--radius-lg);
+        }
+        .profile-img {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid var(--color-primary);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        .profile-info h3 { font-size: 1.8rem; margin-bottom: 1rem; }
+        .skills-list { display: flex; gap: 0.8rem; flex-wrap: wrap; margin-top: 1.5rem; }
+        .skill-tag { 
+            padding: 0.5rem 1rem; 
+            background: var(--color-bg); 
+            border: 1px solid var(--color-border); 
+            border-radius: var(--radius-md);
+            font-weight: 600;
+        }
+
+        /* ------------------------------------------------ */
+        /* ADMIN MODE STYLES */
+        /* ------------------------------------------------ */
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        
+        .admin-btn-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .admin-btn {
+            background-color: #FEF3C7; /* Beige/Yellowish */
+            border: 1px solid #D1D5DB;
+            padding: 0.5rem 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            color: #1f2937;
+            font-family: inherit;
+        }
+        .admin-btn:hover { background-color: #FDE68A; }
+
+        /* 저장 버튼 별도 스타일 */
+        .admin-btn.save-btn {
+            background-color: var(--color-primary);
+            color: white;
+            border-color: var(--color-primary-dark);
+        }
+        .admin-btn.save-btn:hover {
+            background-color: var(--color-primary-dark);
+        }
+        
+        .admin-category-group { margin-bottom: 2rem; }
+        .admin-category-header {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .admin-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .admin-input-title {
+            flex-grow: 1;
+            padding: 0.4rem;
+            border: 1px solid var(--color-border);
+            border-radius: 4px;
+            background: var(--color-bg);
+            color: var(--color-text);
+        }
+
+        .admin-input-date {
+            width: 150px;
+            padding: 0.4rem;
+            border: 1px solid var(--color-border);
+            border-radius: 4px;
+            background: var(--color-bg);
+            color: var(--color-text);
+            text-align: center;
+        }
+
+        .admin-checkbox {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .admin-notice {
+            background-color: #EFF6FF;
+            border: 1px solid #BFDBFE;
+            color: #1E40AF;
+            padding: 0.75rem;
+            border-radius: 6px;
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .left-frame { display: none; }
+            .top-frame-left { width: auto; border: none; }
+            .top-frame-center { display: none; }
+            .top-frame-right { gap: 1rem; }
+            .top-nav-link { display: none; }
+            .profile-container { flex-direction: column; text-align: center; }
+            .profile-img { width: 150px; height: 150px; }
+            .admin-header { flex-direction: column; gap: 15px; align-items: flex-start; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. TOP FRAME -->
+    <header class="top-frame">
+        <div class="top-frame-left">
+            <a class="logo" onclick="switchContent('home-recent');">Jowon logo</a>
+        </div>
+        
+        <div class="top-frame-center">
+            JOWON Dev Log
+        </div>
+
+        <div class="top-frame-right">
+            <a class="top-nav-link" onclick="switchContent('home-recent');">홈</a>
+            <a class="top-nav-link" onclick="switchContent('tech-all');">기술</a>
+            <a class="top-nav-link" onclick="switchContent('design-all');">디자인</a>
+            <a class="top-nav-link" onclick="switchContent('about');">소개</a>
+
+            <button class="theme-btn" id="theme-toggle" aria-label="테마 변경">
+                <i class="fas fa-moon"></i>
+            </button>
+            <!-- 설정 아이콘 (관리자 모드 토글) -->
+            <button class="theme-btn" style="font-size: 1rem;" onclick="toggleAdminMode()">
+                <i class="fas fa-cog"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- 2. MAIN FRAME -->
+    <div class="main-frame">
+        <!-- 2.1. LEFT FRAME -->
+        <aside class="left-frame">
+            <div class="nav-item active" data-category="home">
+                <span class="nav-title"><i class="fas fa-home nav-icon"></i> 홈</span>
+                <i class="fas fa-angle-right"></i>
+            </div>
+            <div class="sub-menu open" data-menu="home">
+                <a class="sub-menu-item active" data-target="home-recent">최신 기록</a>
+                <a class="sub-menu-item" data-target="home-featured">주요 포스트</a>
+            </div>
+
+            <div class="nav-item" data-category="tech">
+                <span class="nav-title"><i class="fas fa-laptop-code nav-icon"></i> 기술</span>
+                <i class="fas fa-angle-right"></i>
+            </div>
+            <div class="sub-menu" data-menu="tech">
+                <a class="sub-menu-item" data-target="tech-all">전체보기</a>
+                <a class="sub-menu-item" data-target="tech-frontend">프론트엔드</a>
+                <a class="sub-menu-item" data-target="tech-backend">백엔드</a>
+                <a class="sub-menu-item" data-target="tech-devops">데브옵스</a>
+            </div>
+
+            <div class="nav-item" data-category="design">
+                <span class="nav-title"><i class="fas fa-palette nav-icon"></i> 디자인</span>
+                <i class="fas fa-angle-right"></i>
+            </div>
+            <div class="sub-menu" data-menu="design">
+                <a class="sub-menu-item" data-target="design-all">전체보기</a>
+                <a class="sub-menu-item" data-target="design-ux">UX/UI</a>
+                <a class="sub-menu-item" data-target="design-system">디자인 시스템</a>
+            </div>
+            
+            <div class="nav-item" data-category="about">
+                <span class="nav-title"><i class="fas fa-user nav-icon"></i> 소개</span>
+                <i class="fas fa-angle-right"></i>
+            </div>
+            <div class="sub-menu" data-menu="about">
+                <a class="sub-menu-item" data-target="about">Jowon Profile</a>
+                <a class="sub-menu-item" data-target="about-contact">Contact</a>
+            </div>
+        </aside>
+
+        <!-- 2.2. RIGHT FRAME -->
+        <main class="right-frame">
+            
+            <!-- (A) Home - Recent Posts -->
+            <section id="home-recent" class="content-section active">
+                <h2 class="section-title">Jowon의 최신 기록</h2>
+                <div class="post-grid" id="recent-posts-container">
+                    <!-- JS로 렌더링 -->
+                </div>
+            </section>
+            
+            <!-- (B) Home - Featured Posts -->
+            <section id="home-featured" class="content-section">
+                <h2 class="section-title">주요 포스트 (Featured)</h2>
+                <div class="post-grid" id="featured-posts-container">
+                    <!-- JS로 렌더링 -->
+                </div>
+            </section>
+
+            <!-- (C) Tech Views -->
+            <section id="tech-all" class="content-section">
+                <h2 class="section-title">기술 블로그 (전체)</h2>
+                <div class="post-grid" id="tech-all-container"></div>
+            </section>
+            <section id="tech-frontend" class="content-section">
+                <h2 class="section-title">기술: 프론트엔드</h2>
+                <div class="post-grid" id="tech-frontend-container"></div>
+            </section>
+            <section id="tech-backend" class="content-section">
+                <h2 class="section-title">기술: 백엔드</h2>
+                <div class="post-grid" id="tech-backend-container"></div>
+            </section>
+            <section id="tech-devops" class="content-section">
+                <h2 class="section-title">기술: 데브옵스</h2>
+                <div class="post-grid" id="tech-devops-container"></div>
+            </section>
+            
+            <!-- (D) Design Views -->
+            <section id="design-all" class="content-section">
+                <h2 class="section-title">디자인 & UX (전체)</h2>
+                <div class="post-grid" id="design-all-container"></div>
+            </section>
+            <section id="design-ux" class="content-section">
+                <h2 class="section-title">디자인: UX/UI</h2>
+                <div class="post-grid" id="design-ux-container"></div>
+            </section>
+            <section id="design-system" class="content-section">
+                <h2 class="section-title">디자인: 디자인 시스템</h2>
+                <div class="post-grid" id="design-system-container"></div>
+            </section>
+
+            <!-- (E) About -->
+            <section id="about" class="content-section">
+                <h2 class="section-title">About Jowon</h2>
+                <div class="profile-container">
+                    <img src="../image/profile.jpg" alt="Jowon Profile Image" class="profile-img">
+                    <div class="profile-info">
+                        <h3>안녕하세요, <span style="color:var(--color-primary)">Jowon</span>입니다.</h3>
+                        <p style="color:var(--color-text-light); margin-bottom: 1.5rem;">
+                            사용자 중심의 문제를 기술로 해결하는 것을 좋아합니다. 
+                        </p>
+                        <h4>My Tech Stack</h4>
+                        <div class="skills-list">
+                            <span class="skill-tag">JavaScript</span>
+                            <span class="skill-tag">React</span>
+                            <span class="skill-tag">Node.js</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section id="about-contact" class="content-section">
+                <h2 class="section-title">Contact</h2>
+                <p>Email: sowokim777@gmail.com</p>
+            </section>
+
+            <!-- (F) ADMIN MODE -->
+            <section id="admin-mode" class="content-section">
+                <div class="admin-header">
+                    <h2 class="section-title" style="border:none; margin:0;">관리자 Mode</h2>
+                    <div class="admin-btn-group">
+                        <button class="admin-btn" onclick="addPost()">추가</button>
+                        <button class="admin-btn" onclick="updatePosts()">수정</button>
+                        <button class="admin-btn" onclick="deletePosts()">삭제</button>
+                        <button class="admin-btn save-btn" onclick="saveAndExit()">저장</button>
+                    </div>
+                </div>
+                
+                <div class="admin-notice">
+                    <i class="fas fa-info-circle"></i> 내용을 추가, 수정, 삭제한 후에는 반드시 <strong>'저장'</strong> 버튼을 눌러야 사용자 모드에 반영됩니다.
+                </div>
+
+                <!-- Technical Category Management -->
+                <div class="admin-category-group">
+                    <div class="admin-category-header">
+                        기술 <input type="checkbox" id="check-tech-category" class="admin-checkbox">
+                    </div>
+                    <div id="admin-tech-list">
+                        <!-- JS renders rows here -->
+                    </div>
+                </div>
+
+                <!-- Design Category Management -->
+                <div class="admin-category-group">
+                    <div class="admin-category-header">
+                        디자인 <input type="checkbox" id="check-design-category" class="admin-checkbox">
+                    </div>
+                    <div id="admin-design-list">
+                        <!-- JS renders rows here -->
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        // ----------------------------------------------------
+        // 1. DATA MANAGEMENT (Centralized Store)
+        // ----------------------------------------------------
+        // 초기 데이터 (HTML 하드코딩 대체)
+        let postsData = [
+            { id: 1, mainCategory: 'tech', subCategory: 'backend', title: 'Node.js 이벤트 루프 완벽 가이드', date: '2024.11.26', excerpt: '싱글 스레드 환경 비동기 처리', featured: true },
+            { id: 2, mainCategory: 'design', subCategory: 'ux', title: '마이크로 인터랙션의 힘', date: '2024.11.24', excerpt: '사용자 경험 향상 애니메이션', featured: true },
+            { id: 3, mainCategory: 'tech', subCategory: 'devops', title: '서버리스 아키텍처 비용 최적화', date: '2024.11.20', excerpt: 'AWS Lambda 비용 절감', featured: true },
+            { id: 4, mainCategory: 'tech', subCategory: 'frontend', title: 'React 19 컴파일러 도입기', date: '2024.11.15', excerpt: '수동 메모이제이션의 종말?', featured: false },
+            { id: 5, mainCategory: 'tech', subCategory: 'api', title: 'GraphQL vs REST', date: '2024.11.12', excerpt: 'API 아키텍처 선택 가이드', featured: false },
+            { id: 6, mainCategory: 'design', subCategory: 'system', title: '디자인 시스템 구축 실패기', date: '2024.11.01', excerpt: '토큰 네이밍부터 배포까지', featured: false },
+            { id: 7, mainCategory: 'tech', subCategory: 'web', title: '웹 어셈블리(Wasm)의 미래', date: '2024.11.10', excerpt: '고성능 웹 애플리케이션', featured: true }
+        ];
+
+        // ----------------------------------------------------
+        // 2. RENDER FUNCTIONS (VIEW MODE)
+        // ----------------------------------------------------
+        function renderViewMode() {
+            // Clear containers
+            const containers = {
+                'recent': document.getElementById('recent-posts-container'),
+                'featured': document.getElementById('featured-posts-container'),
+                'tech-all': document.getElementById('tech-all-container'),
+                'tech-frontend': document.getElementById('tech-frontend-container'),
+                'tech-backend': document.getElementById('tech-backend-container'),
+                'tech-devops': document.getElementById('tech-devops-container'),
+                'design-all': document.getElementById('design-all-container'),
+                'design-ux': document.getElementById('design-ux-container'),
+                'design-system': document.getElementById('design-system-container')
+            };
+
+            for(let key in containers) { if(containers[key]) containers[key].innerHTML = ''; }
+
+            // Populate containers
+            postsData.forEach(post => {
+                const cardHTML = createCardHTML(post);
+                
+                // Tech Logic
+                if (post.mainCategory === 'tech') {
+                    if(containers['tech-all']) containers['tech-all'].innerHTML += cardHTML;
+                    if (post.subCategory === 'frontend' && containers['tech-frontend']) containers['tech-frontend'].innerHTML += cardHTML;
+                    if (post.subCategory === 'backend' && containers['tech-backend']) containers['tech-backend'].innerHTML += cardHTML;
+                    if (post.subCategory === 'devops' && containers['tech-devops']) containers['tech-devops'].innerHTML += cardHTML;
+                }
+                
+                // Design Logic
+                if (post.mainCategory === 'design') {
+                    if(containers['design-all']) containers['design-all'].innerHTML += cardHTML;
+                    if (post.subCategory === 'ux' && containers['design-ux']) containers['design-ux'].innerHTML += cardHTML;
+                    if (post.subCategory === 'system' && containers['design-system']) containers['design-system'].innerHTML += cardHTML;
+                }
+
+                // Recent Logic (Simply taking first 3 for demo)
+                if (containers['recent'] && postsData.indexOf(post) < 3) {
+                    containers['recent'].innerHTML += cardHTML;
+                }
+
+                // Featured Logic
+                if (post.featured && containers['featured']) {
+                    containers['featured'].innerHTML += cardHTML;
+                }
+            });
+        }
+
+        function createCardHTML(post) {
+            let tagClass = post.mainCategory === 'tech' ? '기술' : '디자인'; 
+            if(post.subCategory) tagClass += ` - ${post.subCategory.toUpperCase()}`;
+            
+            return `
+            <article class="card">
+                <div class="card-body">
+                    <span class="card-tag">${tagClass}</span>
+                    <h3 class="card-title">${post.title}</h3>
+                    <p class="card-excerpt">${post.excerpt}</p>
+                    <div class="card-footer">${post.date}</div>
+                </div>
+            </article>`;
+        }
+
+        // ----------------------------------------------------
+        // 3. RENDER FUNCTIONS (ADMIN MODE)
+        // ----------------------------------------------------
+        function renderAdminMode() {
+            const techList = document.getElementById('admin-tech-list');
+            const designList = document.getElementById('admin-design-list');
+            
+            techList.innerHTML = '';
+            designList.innerHTML = '';
+
+            // ID 순서가 아닌, 배열의 순서대로 표시하고 정렬을 위해 postsData를 복사하여 사용
+            const sortedPosts = [...postsData].sort((a, b) => {
+                // mainCategory 기준으로 정렬 (tech 먼저, design 다음)
+                if (a.mainCategory < b.mainCategory) return -1;
+                if (a.mainCategory > b.mainCategory) return 1;
+                // 동일한 mainCategory 내에서는 ID 역순 (최신 항목이 목록 상단에)
+                return b.id - a.id;
+            });
+
+            sortedPosts.forEach((post, index) => {
+                const rowHTML = `
+                <div class="admin-row">
+                    <input type="checkbox" class="admin-checkbox row-check" data-id="${post.id}">
+                    <input type="text" class="admin-input-title" value="${post.title}" id="title-${post.id}">
+                    <input type="text" class="admin-input-date" value="${post.date}" id="date-${post.id}">
+                </div>`;
+
+                if (post.mainCategory === 'tech') {
+                    techList.innerHTML += rowHTML;
+                } else if (post.mainCategory === 'design') {
+                    designList.innerHTML += rowHTML;
+                }
+            });
+        }
+
+        // ----------------------------------------------------
+        // 4. ADMIN ACTIONS (Add, Edit, Delete, Toggle, Save)
+        // ----------------------------------------------------
+        
+        function toggleAdminMode() {
+            const adminSection = document.getElementById('admin-mode');
+            if (adminSection.classList.contains('active')) {
+                // Return to user view (without saving explicit changes if any were pending, though current logic updates array immediately)
+                switchContent(lastUserView);
+            } else {
+                renderAdminMode();
+                switchContent('admin-mode');
+            }
+        }
+
+        // A. Add (Updates Data + Re-renders Admin UI)
+        function addPost() {
+            const techChecked = document.getElementById('check-tech-category').checked;
+            const designChecked = document.getElementById('check-design-category').checked;
+            
+            // 1. 체크 안 했을 때
+            if (!techChecked && !designChecked) {
+                // alert 대신 사용자 정의 모달 사용 권장 (여기서는 예시로 alert 사용)
+                alert("기술 또는 디자인을 체크해 주세요.");
+                return;
+            }
+
+            // 3. 둘 다 체크 했을 때
+            if (techChecked && designChecked) {
+                 // alert 대신 사용자 정의 모달 사용 권장 (여기서는 예시로 alert 사용)
+                alert("한개만 선택해 주세요");
+                return;
+            }
+
+            // 2. 정상 작동 (하나만 체크된 경우)
+            // 새로운 ID 생성 (현재 최대 ID + 1)
+            const newId = postsData.length > 0 ? Math.max(...postsData.map(p => p.id)) + 1 : 1;
+            // 오늘 날짜 포맷 (YYYY.MM.DD)
+            const today = new Date().toLocaleDateString('ko-KR', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+            }).replace(/\. /g, '.').replace('.', '').replace(/\.$/, ''); // '2024. 12. 08.' -> '2024.12.08'
+
+            if (techChecked) {
+                postsData.push({ 
+                    id: newId, 
+                    mainCategory: 'tech', 
+                    subCategory: 'frontend', // 기술 카테고리의 기본값
+                    title: '새 기술 포스트 제목을 입력해주세요', 
+                    date: today, 
+                    excerpt: '간단한 내용을 입력해주세요', 
+                    featured: false 
+                });
+                alert("새 기술 포스트가 추가되었습니다. 내용을 수정하고 저장하세요.");
+            } else if (designChecked) { // 이미 if/else if로 하나만 선택된 상황이므로 else if 사용
+                postsData.push({ 
+                    id: newId, 
+                    mainCategory: 'design', 
+                    subCategory: 'ux', // 디자인 카테고리의 기본값
+                    title: '새 디자인 포스트 제목을 입력해주세요', 
+                    date: today, 
+                    excerpt: '간단한 내용을 입력해주세요', 
+                    featured: false 
+                });
+                alert("새 디자인 포스트가 추가되었습니다. 내용을 수정하고 저장하세요.");
+            }
+
+            // 새로운 데이터가 반영된 관리자 목록을 렌더링
+            renderAdminMode(); 
+            // Note: We do NOT call renderViewMode() here. Changes are pending until Save.
+        }
+
+        // B. Update (Updates Data from Inputs + Re-renders Admin UI if needed)
+        function updatePosts() {
+            let updateCount = 0;
+            postsData.forEach(post => {
+                const titleInput = document.getElementById(`title-${post.id}`);
+                const dateInput = document.getElementById(`date-${post.id}`);
+                
+                if (titleInput && dateInput) {
+                    // Check if value changed
+                    if(post.title !== titleInput.value || post.date !== dateInput.value) {
+                         post.title = titleInput.value;
+                         post.date = dateInput.value;
+                         updateCount++;
+                    }
+                }
+            });
+            if(updateCount > 0) alert("수정 사항이 반영되었습니다. '저장' 버튼을 눌러 확정하세요.");
+            else alert("변경 사항이 없습니다.");
+            
+            renderAdminMode();
+        }
+
+        // C. Delete (Removes Data + Re-renders Admin UI)
+        function deletePosts() {
+            const checkboxes = document.querySelectorAll('.row-check:checked');
+            if (checkboxes.length === 0) {
+                // IMPORTANT: Use custom modal or message box instead of alert() in production.
+                alert("삭제할 항목을 선택해주세요.");
+                return;
+            }
+
+            if(!confirm(checkboxes.length + "개의 항목을 삭제하시겠습니까?")) return;
+
+            const idsToDelete = Array.from(checkboxes).map(cb => parseInt(cb.dataset.id));
+            postsData = postsData.filter(post => !idsToDelete.includes(post.id));
+
+            renderAdminMode();
+        }
+
+        // D. Save & Exit (Applies changes to View + Exits)
+        function saveAndExit() {
+            // Apply changes to the user view
+            renderViewMode();
+            alert("저장되었습니다.");
+            // Return to user view
+            switchContent(lastUserView);
+        }
+
+
+        // ----------------------------------------------------
+        // 5. NAVIGATION & UTILS
+        // ----------------------------------------------------
+        const contentSections = document.querySelectorAll('.content-section');
+        const subMenuItems = document.querySelectorAll('.sub-menu-item');
+        const navItems = document.querySelectorAll('.nav-item');
+        const subMenus = document.querySelectorAll('.sub-menu');
+        const rightFrame = document.querySelector('.right-frame');
+        
+        // Track the last user view
+        let lastUserView = 'home-recent';
+
+        function switchContent(targetId) {
+            // Update lastUserView only if we are navigating to a non-admin section
+            if (targetId !== 'admin-mode') {
+                lastUserView = targetId;
+            }
+
+            // View Switch
+            contentSections.forEach(section => section.classList.remove('active'));
+            const target = document.getElementById(targetId);
+            if(target) target.classList.add('active');
+            rightFrame.scrollTop = 0;
+
+            // Nav Highlight
+            subMenuItems.forEach(item => item.classList.remove('active'));
+            const activeItem = document.querySelector(`.sub-menu-item[data-target="${targetId}"]`);
+            if (activeItem) {
+                activeItem.classList.add('active');
+                const parentNav = activeItem.closest('.sub-menu').previousElementSibling;
+                if(parentNav && !parentNav.classList.contains('active')) {
+                   parentNav.classList.add('active');
+                   const menu = activeItem.closest('.sub-menu');
+                   menu.classList.add('open');
+                   menu.style.maxHeight = menu.scrollHeight + "px";
+                }
+            }
+        }
+
+        // Left Menu Toggle
+        navItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const category = item.getAttribute('data-category');
+                const menu = document.querySelector(`.sub-menu[data-menu="${category}"]`);
+                
+                navItems.forEach(nav => { if(nav !== item) nav.classList.remove('active'); });
+                subMenus.forEach(m => { if(m !== menu) { m.classList.remove('open'); m.style.maxHeight = null; }});
+
+                item.classList.toggle('active');
+                if(item.classList.contains('active')) {
+                    menu.classList.add('open');
+                    menu.style.maxHeight = menu.scrollHeight + "px";
+                } else {
+                    menu.classList.remove('open');
+                    menu.style.maxHeight = null;
+                }
+            });
+        });
+        
+        // Submenu Click
+        subMenuItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                const t = item.getAttribute('data-target');
+                if(t) switchContent(t);
+            });
+        });
+
+        // Theme Toggle
+        const themeBtn = document.getElementById('theme-toggle');
+        themeBtn.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            themeBtn.querySelector('i').className = isDark ? 'fas fa-sun' : 'fas fa-moon';
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        });
+
+        // Init
+        window.onload = () => {
+            renderViewMode(); // Load initial data
+            switchContent('home-recent');
+            const homeNav = document.querySelector('.nav-item[data-category="home"]');
+            if(homeNav) homeNav.click();
+        };
+
+    </script>
+</body>
+</html>
