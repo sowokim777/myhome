@@ -6,10 +6,8 @@
     <title>Jowon's Blog & Portfolio</title>
     <meta name="description" content="Jowon의 기술 블로그 및 포트폴리오 사이트입니다.">
     
-    <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Google Fonts (Inter & Noto Sans KR) -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
 
     <style>
@@ -436,7 +434,6 @@
 </head>
 <body>
 
-    <!-- Header / Navigation -->
     <nav class="navbar">
         <div class="logo" onclick="app.render('home')">Jowon.</div>
         <ul class="nav-links" id="navLinks">
@@ -456,13 +453,10 @@
         </div>
     </nav>
 
-    <!-- Main Content Area -->
     <div class="container" id="mainContainer">
         
-        <!-- Hero Section (Visible only on Home) -->
         <header id="heroSection" class="hero">
             <div class="featured-post">
-                <!-- Updated Hero Image: Futuristic Tech/Network -->
                 <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80" alt="Featured Post">
                 <div class="featured-content">
                     <span class="featured-tag">Technology</span>
@@ -472,18 +466,13 @@
             </div>
         </header>
 
-        <!-- Dynamic Content Title -->
         <h2 class="section-title" id="pageTitle">Recent Posts</h2>
 
-        <!-- Post Grid -->
         <div class="post-grid" id="postGrid">
-            <!-- Items injected via JS -->
-        </div>
+            </div>
 
-        <!-- About Section -->
         <section id="aboutSection" class="about-section">
             <div class="about-content">
-                <!-- Updated Profile Image: Professional Portrait -->
                 <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80" alt="Jowon Profile" class="profile-img">
                 <div class="about-text">
                     <h2>Hello, I'm Jowon 👋</h2>
@@ -503,7 +492,6 @@
 
     </div>
 
-    <!-- Footer -->
     <footer>
         <div class="footer-links">
             <a href="#" onclick="app.render('home')">Home</a>
@@ -526,7 +514,6 @@
                 title: "마이크로 인터렉션의 힘", 
                 content: "사용자 경험 향상 애니메이션", 
                 date: "2025-12-01", 
-                // Updated: Interactive Tech / Touch Interface
                 image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=600&q=80" 
             },
             { 
@@ -536,7 +523,6 @@
                 title: "디자인 시스템 구축 실패기", 
                 content: "토큰 네이밍 부터 배포 까지", 
                 date: "2025-12-02", 
-                // Color Palette & Design
                 image: "https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&w=600&q=80" 
             },
             { 
@@ -546,7 +532,6 @@
                 title: "Node.js 이벤트 루프 완벽 가이드", 
                 content: "싱글 스레드 환경 비동기 처리", 
                 date: "2025-12-03", 
-                // Code & Matrix
                 image: "https://images.unsplash.com/photo-1627398242454-45a1465c2479?auto=format&fit=crop&w=600&q=80" 
             },
             { 
@@ -556,7 +541,6 @@
                 title: "React 19 컴파일러 도입기", 
                 content: "수동 메모이제이션의 종말?", 
                 date: "2025-12-04", 
-                // React/Frontend Code
                 image: "https://images.unsplash.com/photo-1633356122544-f134324a6cee?auto=format&fit=crop&w=600&q=80" 
             },
             { 
@@ -566,7 +550,6 @@
                 title: "서버리스 아키텍처 비용 최적화", 
                 content: "AWS Lambda 비용 절감", 
                 date: "2025-12-05", 
-                // Server Room / Cloud
                 image: "https://images.unsplash.com/photo-1484662020986-75935d2ebc66?auto=format&fit=crop&w=600&q=80" 
             },
             { 
@@ -576,8 +559,8 @@
                 title: "타로점 웹 앱", 
                 content: "웹 기반의 타로점 앱 프로젝트", 
                 date: "2025-12-06", 
-                // Updated: Tarot Cards / Fortune Telling
-                image: "https://images.unsplash.com/photo-1515264624446-0b6b0c2a58b6?auto=format&fit=crop&w=600&q=80" 
+                // Updated: Local path for Tarot App Image
+                image: "image/taro-oracle.jpg" 
             },
             { 
                 id: 7, 
@@ -586,7 +569,6 @@
                 title: "테트리스 코드", 
                 content: "파이선으로 구현한 테트리스 게임", 
                 date: "2025-12-07", 
-                // Gaming / Blocks
                 image: "https://images.unsplash.com/photo-1551103782-8ab07afd45c1?auto=format&fit=crop&w=600&q=80" 
             }
         ];
@@ -601,51 +583,43 @@
                 app.render('home'); // Initial render
             },
 
-            // Render specific view (SPA behavior)
             render: (view) => {
                 const hero = document.getElementById('heroSection');
                 const grid = document.getElementById('postGrid');
                 const about = document.getElementById('aboutSection');
                 const title = document.getElementById('pageTitle');
                 
-                // Reset Views
                 hero.style.display = 'none';
                 grid.style.display = 'none';
                 about.style.display = 'none';
                 title.style.display = 'block';
 
-                // Update Active Nav
                 document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
                 const activeNav = document.querySelector(`.nav-item[data-target="${view}"]`);
                 if(activeNav) activeNav.classList.add('active');
 
-                // Close mobile menu if open
                 document.getElementById('navLinks').classList.remove('active');
 
-                // View Logic
                 if (view === 'home') {
                     hero.style.display = 'flex';
                     grid.style.display = 'grid';
                     title.innerText = "Recent Posts";
-                    app.populateGrid(rawData); // Show all (or limit to 6 recent)
+                    app.populateGrid(rawData);
                 } 
                 else if (view === 'about') {
                     about.style.display = 'block';
                     title.style.display = 'none';
                 } 
                 else {
-                    // Filter Logic for Tech, Design, Portfolio
                     const filtered = rawData.filter(item => item.category === view);
                     grid.style.display = 'grid';
                     title.innerText = view.charAt(0).toUpperCase() + view.slice(1);
                     app.populateGrid(filtered);
                 }
 
-                // Scroll to top
                 window.scrollTo(0, 0);
             },
 
-            // Generate HTML for Cards
             populateGrid: (data) => {
                 const grid = document.getElementById('postGrid');
                 grid.innerHTML = '';
@@ -655,7 +629,6 @@
                     return;
                 }
 
-                // Sort by date desc
                 const sorted = [...data].sort((a, b) => new Date(b.date) - new Date(a.date));
 
                 sorted.forEach(item => {
@@ -682,7 +655,6 @@
             },
 
             setupEventListeners: () => {
-                // Theme Toggle
                 document.getElementById('themeToggle').addEventListener('click', () => {
                     const body = document.body;
                     const isDark = body.getAttribute('data-theme') === 'dark';
@@ -693,7 +665,6 @@
                     icon.className = isDark ? 'fas fa-moon' : 'fas fa-sun';
                 });
 
-                // Mobile Menu Toggle
                 document.getElementById('menuToggle').addEventListener('click', () => {
                     document.getElementById('navLinks').classList.toggle('active');
                 });
@@ -707,9 +678,7 @@
             }
         };
 
-        // Initialize App on Load
         document.addEventListener('DOMContentLoaded', app.init);
-
     </script>
 </body>
 </html>
