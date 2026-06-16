@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projects - Jowon Technical Archive</title>
+    <style>
+        /* index.html과 동일한 디자인 토큰 변수 공유 */
+        :root {
+            --bg-color: #ffffff;
+            --surface: #f8f9fa;
+            --text-main: #111111;
+            --text-muted: #666666;
+            --border-color: #e5e7eb;
+            --accent-color: #0076ff;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #000000;
+            --surface: #111111;
+            --text-main: #e5e7eb;
+            --text-muted: #888888;
+            --border-color: #222222;
+            --accent-color: #2f95dc;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            line-height: 1.65;
+            letter-spacing: -0.022em;
+            padding-bottom: 100px;
+            word-break: keep-all;
+        }
+
+        header {
+            position: sticky;
+            top: 0;
+            background-color: var(--bg-color);
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 680px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 1.5rem;
+        }
+
+        .logo-link {
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            color: var(--text-main);
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            font-size: 0.95rem;
+            text-decoration: none;
+            color: var(--text-muted);
+        }
+
+        .nav-links a.active, .nav-links a:hover {
+            color: var(--text-main);
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 4px;
+        }
+
+        main {
+            max-width: 680px;
+            margin: 0 auto;
+            padding: 60px 1.5rem 0 1.5rem;
+        }
+
+        .page-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 40px;
+        }
+
+        .project-item {
+            margin-bottom: 50px;
+        }
+
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+            margin-bottom: 16px;
+        }
+
+        .project-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .project-date {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        /* design.md에서 규정한 계층형 리스트 구조 정밀 통제 */
+        .project-content {
+            font-size: 1.05rem;
+        }
+
+        .project-content p {
+            margin-bottom: 12px;
+        }
+
+        .project-content ul {
+            list-style-type: square;
+            padding-left: 1.5rem;
+            margin-bottom: 12px;
+            color: var(--text-main);
+        }
+
+        .project-content li {
+            margin-bottom: 0.5rem;
+        }
+
+        .project-content ul ul {
+            list-style-type: circle;
+            margin-top: 0.5rem;
+            margin-bottom: 0;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="logo-link">Jowon Technical Archive</a>
+            <div class="nav-links">
+                <a href="portfolio.html" class="active">Projects</a>
+                <a href="blog.html">Posts</a>
+                <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">⊙</button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <h1 class="page-title">Current Projects & Portfolio</h1>
+
+        <article class="project-item">
+            <div class="project-header">
+                <h2 class="project-title">드론 기반 재난 모니터링 프레임워크 연구</h2>
+                <span class="project-date">2026.04 ~ 2027.12</span>
+            </div>
+            <div class="project-content">
+                <p>드론과 Edge AI 기기를 융합하여 재난 현장을 정밀 관제하는 통합 모니터링 프레임워크 핵심 아키텍처 설계 R&D 시스템입니다.</p>
+                <ul>
+                    <li>열지수(WBGT) 기반 실시간 위험도 분석 파이프라인 정립</li>
+                    <li>Edge AI 탑재 하드웨어를 통한 온디바이스 실시간 위험 행동 알고리즘 연산</li>
+                    <li>이동형 드론 노드 간 데이터 무선 동기화 최적화 구성</li>
+                </ul>
+            </div>
+        </article>
+
+        <article class="project-item">
+            <div class="project-header">
+                <h2 class="project-title">Agentic AI 아키텍처 연구</h2>
+                <span class="project-date">Portfolio</span>
+            </div>
+            <div class="project-content">
+                <p>다양한 대형 언어 모델(LLM) 생태계 위에서 자율적으로 판단하고 동작하는 워크플로 자동화 커스텀 에이전트 설계 사양서입니다.</p>
+                <ul>
+                    <li>효율적인 컨텍스트 전달을 위한 고도화된 프롬프트 엔지니어링 룰셋 패턴화</li>
+                    <li>반복 태스크 수행을 위한 상태 머신 기반 에이전틱 오케스트레이션 아키텍처
+                        <ul>
+                            <li>동적 조건 제어 분기(Dynamic Routing Optimization)</li>
+                            <li>에러 자기 회복 루프(Self-Correction Loop) 검증 완료</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </article>
+    </main>
+
+    <script>
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', currentTheme);
+        updateToggleIcon(currentTheme);
+
+        function toggleTheme() {
+            const htmlElement = document.documentElement;
+            let theme = htmlElement.getAttribute('data-theme');
+            theme = (theme === 'light') ? 'dark' : 'light';
+            htmlElement.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            updateToggleIcon(theme);
+        }
+
+        function updateToggleIcon(theme) {
+            const toggleBtn = document.getElementById('themeToggle');
+            toggleBtn.textContent = (theme === 'dark') ? '○' : '⊙';
+        }
+    </script>
+</body>
+</html>
