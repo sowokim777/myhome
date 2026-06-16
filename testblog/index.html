@@ -3,683 +3,232 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jowon's Blog & Portfolio</title>
-    <meta name="description" content="Jowon의 기술 블로그 및 포트폴리오 사이트입니다.">
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
-
+    <title>Jowon Technical Archive</title>
     <style>
-        /* ========================================
-        CSS Variables & Reset
-        ========================================
-        */
         :root {
-            /* Light Theme */
             --bg-color: #ffffff;
-            --card-bg: #f8f9fa;
-            --text-primary: #1a1a1a;
-            --text-secondary: #666666;
-            --accent-color: #3b82f6; /* Blue */
+            --surface: #f8f9fa;
+            --text-main: #111111;
+            --text-muted: #666666;
             --border-color: #e5e7eb;
-            --nav-height: 70px;
-            --transition-speed: 0.3s;
+            --accent-color: #0076ff;
         }
 
         [data-theme="dark"] {
-            /* Dark Theme */
-            --bg-color: #121212;
-            --card-bg: #1e1e1e;
-            --text-primary: #e5e7eb;
-            --text-secondary: #a3a3a3;
-            --accent-color: #60a5fa; /* Light Blue */
-            --border-color: #333333;
+            --bg-color: #000000;
+            --surface: #111111;
+            --text-main: #e5e7eb;
+            --text-muted: #888888;
+            --border-color: #222222;
+            --accent-color: #2f95dc;
         }
 
         * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
+            transition: background-color 0.2s, color 0.2s;
         }
 
         body {
-            font-family: 'Inter', 'Noto Sans KR', sans-serif;
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
             background-color: var(--bg-color);
-            color: var(--text-primary);
-            transition: background-color var(--transition-speed), color var(--transition-speed);
-            line-height: 1.6;
+            color: var(--text-main);
+            line-height: 1.65;
+            letter-spacing: -0.022em;
+            padding-bottom: 100px;
+            word-break: keep-all;
         }
 
-        a {
-            text-decoration: none;
-            color: inherit;
-        }
-
-        ul {
-            list-style: none;
-        }
-
-        img {
-            max-width: 100%;
-            display: block;
-        }
-
-        /* ========================================
-        Header & Navigation
-        ========================================
-        */
-        .navbar {
-            position: fixed;
+        header {
+            position: sticky;
             top: 0;
-            width: 100%;
-            height: var(--nav-height);
-            background-color: rgba(var(--bg-color), 0.8);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--border-color);
+            background-color: var(--bg-color);
             z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 680px;
+            margin: 0 auto;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 2rem;
+            padding: 24px 1.5rem;
         }
 
-        .logo {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: var(--accent-color);
-            cursor: pointer;
+        .logo-link {
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            color: var(--text-main);
         }
 
         .nav-links {
             display: flex;
-            gap: 2rem;
-        }
-
-        .nav-item {
-            font-weight: 500;
-            cursor: pointer;
-            position: relative;
-            transition: color 0.2s;
-        }
-
-        .nav-item:hover, .nav-item.active {
-            color: var(--accent-color);
-        }
-
-        .nav-item.active::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background-color: var(--accent-color);
-        }
-
-        .nav-actions {
-            display: flex;
             align-items: center;
-            gap: 1.5rem;
+            gap: 20px;
+        }
+
+        .nav-links a {
+            font-size: 0.95rem;
+            text-decoration: none;
+            color: var(--text-muted);
+        }
+
+        .nav-links a.active, .nav-links a:hover {
+            color: var(--text-main);
         }
 
         .theme-toggle {
-            cursor: pointer;
-            font-size: 1.2rem;
-            color: var(--text-primary);
-        }
-
-        .menu-toggle {
-            display: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-
-        /* ========================================
-        Main Layout & Sections
-        ========================================
-        */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: calc(var(--nav-height) + 2rem) 2rem 2rem;
-            min-height: 100vh;
-        }
-
-        /* Hero Section */
-        .hero {
-            display: flex;
-            flex-direction: column;
-            gap: 2rem;
-            margin-bottom: 4rem;
-            animation: fadeIn 0.8s ease-out;
-        }
-
-        .featured-post {
-            position: relative;
-            border-radius: 1rem;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            cursor: pointer;
-        }
-
-        .featured-post img {
-            width: 100%;
-            height: 400px;
-            object-fit: cover;
-            transition: transform 0.5s;
-        }
-
-        .featured-post:hover img {
-            transform: scale(1.05);
-        }
-
-        .featured-content {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            padding: 2rem;
-            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
-            color: white;
-        }
-
-        .featured-tag {
-            background-color: var(--accent-color);
-            color: white;
-            padding: 0.25rem 0.75rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-            display: inline-block;
-            margin-bottom: 0.5rem;
-            text-transform: uppercase;
-        }
-
-        /* Grid Section */
-        .section-title {
-            font-size: 1.8rem;
-            margin-bottom: 2rem;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .section-title::before {
-            content: '';
-            width: 5px;
-            height: 25px;
-            background-color: var(--accent-color);
-            border-radius: 2px;
-        }
-
-        .post-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 2rem;
-            margin-bottom: 4rem;
-        }
-
-        .post-card {
-            background-color: var(--card-bg);
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid var(--border-color);
-            transition: transform 0.3s, box-shadow 0.3s;
-            display: flex;
-            flex-direction: column;
-            cursor: pointer;
-        }
-
-        .post-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-        }
-
-        .post-image {
-            height: 200px;
-            width: 100%;
-            background-color: #ddd;
-            overflow: hidden;
-        }
-
-        .post-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.3s;
-        }
-
-        .post-card:hover .post-image img {
-            transform: scale(1.05);
-        }
-
-        .post-info {
-            padding: 1.5rem;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .post-meta {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            margin-bottom: 0.5rem;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .post-title {
-            font-size: 1.25rem;
-            font-weight: 700;
-            margin-bottom: 0.75rem;
-            line-height: 1.4;
-        }
-
-        .post-excerpt {
-            font-size: 0.95rem;
-            color: var(--text-secondary);
-            margin-bottom: 1rem;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
-        .post-tags span {
-            font-size: 0.75rem;
-            background-color: rgba(59, 130, 246, 0.1);
-            color: var(--accent-color);
-            padding: 2px 8px;
-            border-radius: 4px;
-        }
-
-        /* About Section (Hidden by default) */
-        .about-section {
-            display: none;
-            background-color: var(--card-bg);
-            border-radius: 1rem;
-            padding: 3rem;
-            border: 1px solid var(--border-color);
-            animation: fadeIn 0.5s;
-        }
-
-        .about-content {
-            display: flex;
-            align-items: center;
-            gap: 3rem;
-        }
-
-        .profile-img {
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 4px solid var(--accent-color);
-        }
-
-        .about-text h2 {
-            margin-bottom: 1rem;
-            font-size: 2rem;
-        }
-
-        .about-links {
-            margin-top: 1.5rem;
-            display: flex;
-            gap: 1rem;
-        }
-
-        .btn {
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: background 0.2s;
+            background: none;
             border: none;
+            color: var(--text-muted);
             cursor: pointer;
+            font-size: 1rem;
+            padding: 4px;
         }
 
-        .btn-primary {
-            background-color: var(--accent-color);
-            color: white;
+        main {
+            max-width: 680px;
+            margin: 0 auto;
+            padding: 60px 1.5rem 0 1.5rem;
         }
 
-        .btn-outline {
-            border: 2px solid var(--border-color);
-            background: transparent;
-            color: var(--text-primary);
+        .profile-section {
+            margin-bottom: 70px;
         }
 
-        /* Footer */
-        footer {
-            background-color: var(--card-bg);
-            padding: 3rem 2rem;
-            border-top: 1px solid var(--border-color);
-            text-align: center;
-            margin-top: auto;
+        .profile-section h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 16px;
         }
 
-        .footer-links {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            margin-bottom: 1.5rem;
+        .profile-section p {
+            font-size: 1.05rem;
+            color: var(--text-muted);
         }
 
-        .footer-links a:hover {
-            color: var(--accent-color);
+        section {
+            margin-bottom: 50px;
         }
 
-        .copyright {
-            color: var(--text-secondary);
+        section h2 {
             font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
         }
 
-        /* Animations */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        .archive-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
         }
 
-        /* ========================================
-        Media Queries (Responsive Design)
-        ========================================
-        */
-        @media (max-width: 1024px) { /* Tablet */
-            .post-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
+        .archive-item {
+            display: flex;
+            align-items: flex-start;
+            text-decoration: none;
+            color: var(--text-main);
+            font-size: 1.05rem;
+            padding: 2px 0;
         }
 
-        @media (max-width: 768px) { /* Mobile */
-            .nav-links {
-                position: absolute;
-                top: var(--nav-height);
-                left: 0;
-                width: 100%;
-                background-color: var(--card-bg);
-                flex-direction: column;
-                padding: 2rem;
-                gap: 1.5rem;
-                border-bottom: 1px solid var(--border-color);
-                display: none;
-            }
+        .archive-meta {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            width: 50px;
+            flex-shrink: 0;
+        }
 
-            .nav-links.active {
-                display: flex;
-            }
+        .archive-title {
+            flex-grow: 1;
+            margin-right: 16px;
+        }
 
-            .menu-toggle {
-                display: block;
-            }
+        .archive-item:hover .archive-title {
+            color: var(--accent-color);
+            text-decoration: underline;
+            text-underline-offset: 4px;
+        }
 
-            .hero {
-                margin-top: 1rem;
-            }
-
-            .post-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .about-content {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .about-links {
-                justify-content: center;
-            }
+        .archive-date {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            text-align: right;
+            flex-shrink: 0;
         }
     </style>
 </head>
 <body>
 
-    <nav class="navbar">
-        <div class="logo" onclick="app.render('home')">Jowon.</div>
-        <ul class="nav-links" id="navLinks">
-            <li class="nav-item active" onclick="app.render('home')" data-target="home">Home</li>
-            <li class="nav-item" onclick="app.render('technology')" data-target="technology">Technology</li>
-            <li class="nav-item" onclick="app.render('design')" data-target="design">Design</li>
-            <li class="nav-item" onclick="app.render('portpolio')" data-target="portpolio">Portfolio</li>
-            <li class="nav-item" onclick="window.open('testblog/index.html', '_blank')" data-target="testblog">TestBlog</li>
-            <li class="nav-item" onclick="app.render('about')" data-target="about">About</li>
-        </ul>
-        <div class="nav-actions">
-            <div class="theme-toggle" id="themeToggle">
-                <i class="fas fa-moon"></i>
-            </div>
-            <div class="menu-toggle" id="menuToggle">
-                <i class="fas fa-bars"></i>
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="logo-link">Jowon Technical Archive</a>
+            <div class="nav-links">
+                <a href="portfolio.html">Projects</a>
+                <a href="blog.html">Posts</a>
+                <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">⊙</button>
             </div>
         </div>
-    </nav>
+    </header>
 
-    <div class="container" id="mainContainer">
-        
-        <header id="heroSection" class="hero">
-            <div class="featured-post">
-                <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1200&q=80" alt="Featured Post">
-                <div class="featured-content">
-                    <span class="featured-tag">Technology</span>
-                    <h1>2025년 웹 개발 트렌드 전망</h1>
-                    <p>AI 기반 코딩 어시스턴트의 진화와 WebAssembly의 도약</p>
-                </div>
-            </div>
-        </header>
-
-        <h2 class="section-title" id="pageTitle">Recent Posts</h2>
-
-        <div class="post-grid" id="postGrid">
-            </div>
-
-        <section id="aboutSection" class="about-section">
-            <div class="about-content">
-                <img src="image/jowon.jpg" alt="Jowon Profile" class="profile-img">
-                <div class="about-text">
-                    <h2>Hello, I'm Jowon 👋</h2>
-                    <p>Web Developer & UI/UX Enthusiast based in Korea.</p>
-                    <p>사용자 경험을 최우선으로 생각하는 개발자입니다. 새로운 기술을 탐구하고 기록하는 것을 좋아합니다.</p>
-                    <div class="about-links">
-                        <a href="https://github.com/sowokim777" target="_blank" class="btn btn-primary">
-                            <i class="fab fa-github"></i> Github
-                        </a>
-                        <a href="mailto:sowokim777@gmail.com" class="btn btn-outline">
-                            <i class="fas fa-envelope"></i> Email
-                        </a>
-                    </div>
-                </div>
-            </div>
+    <main>
+        <section class="profile-section">
+            <h1>Jowon Home</h1>
+            <p>IT, SW, AI 및 금융 분석 분야의 복잡한 R&D 성과와 전문 지식을 정제된 텍스트 구조로 아카이빙합니다. 오직 글의 본질과 계층적 논리 전개에만 집중하는 공간입니다.</p>
         </section>
 
-    </div>
-
-    <footer>
-        <div class="footer-links">
-            <a href="#" onclick="app.render('home')">Home</a>
-            <a href="#" onclick="app.render('technology')">Technology</a>
-            <a href="#" onclick="app.render('portpolio')">Portfolio</a>
-            <a href="testblog/index.html" target="_blank">TestBlog</a>
-            <a href="https://github.com/sowokim777" target="_blank">Github</a>
-        </div>
-        <p class="copyright">© 2025 Jowon. All rights reserved.</p>
-    </footer>
+        <section>
+            <h2>Recent Threads (All Logs)</h2>
+            <div class="archive-list">
+                <a href="portfolio.html" class="archive-item">
+                    <span class="archive-meta">[01]</span>
+                    <span class="archive-title">드론 기반 재난 모니터링 프레임워크 연구</span>
+                    <span class="archive-date">2026-04</span>
+                </a>
+                <a href="portfolio.html" class="archive-item">
+                    <span class="archive-meta">[02]</span>
+                    <span class="archive-title">Agentic AI 아키텍처 설계를 위한 고찰</span>
+                    <span class="archive-date">Portfolio</span>
+                </a>
+                <a href="blog.html" class="archive-item">
+                    <span class="archive-meta">[03]</span>
+                    <span class="archive-title">주식 투자 전략 가이드북 집필 완료 소회</span>
+                    <span class="archive-date">2026-03</span>
+                </a>
+                <a href="blog.html" class="archive-item">
+                    <span class="archive-meta">[04]</span>
+                    <span class="archive-title">Python 데이터 처리 및 업무 효율화 구조화</span>
+                    <span class="archive-date">2026-02</span>
+                </a>
+            </div>
+        </section>
+    </main>
 
     <script>
-        /**
-         * Data Source (Parsed from item.csv)
-         */
-        const rawData = [
-            { 
-                id: 1, 
-                category: "design", 
-                sub: "ui/ux", 
-                title: "마이크로 인터렉션의 힘", 
-                content: "사용자 경험 향상 애니메이션", 
-                date: "2025-12-01", 
-                image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=600&q=80" 
-            },
-            { 
-                id: 2, 
-                category: "design", 
-                sub: "system", 
-                title: "디자인 시스템 구축 실패기", 
-                content: "토큰 네이밍 부터 배포 까지", 
-                date: "2025-12-02", 
-                image: "https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&w=600&q=80" 
-            },
-            { 
-                id: 3, 
-                category: "technology", 
-                sub: "backend", 
-                title: "Node.js 이벤트 루프 완벽 가이드", 
-                content: "싱글 스레드 환경 비동기 처리", 
-                date: "2025-12-03", 
-                image: "https://images.unsplash.com/photo-1627398242454-45a1465c2479?auto=format&fit=crop&w=600&q=80" 
-            },
-            { 
-                id: 4, 
-                category: "technology", 
-                sub: "frontend", 
-                title: "React 19 컴파일러 도입기", 
-                content: "수동 메모이제이션의 종말?", 
-                date: "2025-12-04", 
-                image: "https://images.unsplash.com/photo-1633356122544-f134324a6cee?auto=format&fit=crop&w=600&q=80" 
-            },
-            { 
-                id: 5, 
-                category: "technology", 
-                sub: "devops", 
-                title: "서버리스 아키텍처 비용 최적화", 
-                content: "AWS Lambda 비용 절감", 
-                date: "2025-12-05", 
-                image: "https://images.unsplash.com/photo-1484662020986-75935d2ebc66?auto=format&fit=crop&w=600&q=80" 
-            },
-            { 
-                id: 6, 
-                category: "portpolio", 
-                sub: "web", 
-                title: "타로점 웹 앱", 
-                content: "웹 기반의 타로점 앱 프로젝트", 
-                date: "2025-12-06", 
-                image: "image/taro-oracle.jpg" 
-            },
-            { 
-                id: 7, 
-                category: "portpolio", 
-                sub: "python", 
-                title: "테트리스 코드", 
-                content: "파이선으로 구현한 테트리스 게임", 
-                date: "2025-12-07", 
-                image: "https://images.unsplash.com/photo-1551103782-8ab07afd45c1?auto=format&fit=crop&w=600&q=80" 
-            }
-        ];
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', currentTheme);
+        updateToggleIcon(currentTheme);
 
-        /**
-         * Application Logic
-         */
-        const app = {
-            init: () => {
-                app.setupEventListeners();
-                app.loadTheme();
-                app.render('home'); // Initial render
-            },
+        function toggleTheme() {
+            const htmlElement = document.documentElement;
+            let theme = htmlElement.getAttribute('data-theme');
+            theme = (theme === 'light') ? 'dark' : 'light';
+            htmlElement.setAttribute('data-theme', theme);
+            localStorage.setItem('theme', theme);
+            updateToggleIcon(theme);
+        }
 
-            render: (view) => {
-                const hero = document.getElementById('heroSection');
-                const grid = document.getElementById('postGrid');
-                const about = document.getElementById('aboutSection');
-                const title = document.getElementById('pageTitle');
-                
-                hero.style.display = 'none';
-                grid.style.display = 'none';
-                about.style.display = 'none';
-                title.style.display = 'block';
-
-                document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-                const activeNav = document.querySelector(`.nav-item[data-target="${view}"]`);
-                if(activeNav) activeNav.classList.add('active');
-
-                document.getElementById('navLinks').classList.remove('active');
-
-                if (view === 'home') {
-                    hero.style.display = 'flex';
-                    grid.style.display = 'grid';
-                    title.innerText = "Recent Posts";
-                    app.populateGrid(rawData);
-                } 
-                else if (view === 'about') {
-                    about.style.display = 'block';
-                    title.style.display = 'none';
-                } 
-                else {
-                    const filtered = rawData.filter(item => item.category === view);
-                    grid.style.display = 'grid';
-                    title.innerText = view.charAt(0).toUpperCase() + view.slice(1);
-                    app.populateGrid(filtered);
-                }
-
-                window.scrollTo(0, 0);
-            },
-
-            populateGrid: (data) => {
-                const grid = document.getElementById('postGrid');
-                grid.innerHTML = '';
-
-                if (data.length === 0) {
-                    grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-secondary);">No posts found in this category.</p>';
-                    return;
-                }
-
-                const sorted = [...data].sort((a, b) => new Date(b.date) - new Date(a.date));
-
-                sorted.forEach(item => {
-                    const card = document.createElement('article');
-                    card.className = 'post-card';
-                    card.innerHTML = `
-                        <div class="post-image">
-                            <img src="${item.image}" alt="${item.title}" loading="lazy">
-                        </div>
-                        <div class="post-info">
-                            <div class="post-meta">
-                                <span style="text-transform: uppercase; font-weight:bold; color:var(--accent-color)">${item.sub}</span>
-                                <span>${item.date}</span>
-                            </div>
-                            <h3 class="post-title">${item.title}</h3>
-                            <p class="post-excerpt">${item.content}</p>
-                            <div class="post-tags">
-                                <span>#${item.category}</span>
-                            </div>
-                        </div>
-                    `;
-                    grid.appendChild(card);
-                });
-            },
-
-            setupEventListeners: () => {
-                document.getElementById('themeToggle').addEventListener('click', () => {
-                    const body = document.body;
-                    const isDark = body.getAttribute('data-theme') === 'dark';
-                    body.setAttribute('data-theme', isDark ? 'light' : 'dark');
-                    localStorage.setItem('theme', isDark ? 'light' : 'dark');
-                    
-                    const icon = document.querySelector('#themeToggle i');
-                    icon.className = isDark ? 'fas fa-moon' : 'fas fa-sun';
-                });
-
-                document.getElementById('menuToggle').addEventListener('click', () => {
-                    document.getElementById('navLinks').classList.toggle('active');
-                });
-            },
-
-            loadTheme: () => {
-                const savedTheme = localStorage.getItem('theme') || 'light';
-                document.body.setAttribute('data-theme', savedTheme);
-                const icon = document.querySelector('#themeToggle i');
-                icon.className = savedTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
-            }
-        };
-
-        document.addEventListener('DOMContentLoaded', app.init);
+        function updateToggleIcon(theme) {
+            const toggleBtn = document.getElementById('themeToggle');
+            toggleBtn.textContent = (theme === 'dark') ? '○' : '⊙';
+        }
     </script>
 </body>
 </html>
